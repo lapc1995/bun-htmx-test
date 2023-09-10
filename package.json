@@ -1,0 +1,21 @@
+{
+  "name": "quickstart",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/figlet": "^1.5.6",
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "start": "bun run index.tsx",
+    "hot": "bun --hot run index.tsx"
+  },
+  "dependencies": {
+    "@elysiajs/html": "^0.6.4",
+    "elysia": "^0.6.20",
+    "figlet": "^1.6.0"
+  }
+}
