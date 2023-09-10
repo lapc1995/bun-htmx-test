@@ -170,3 +170,5 @@ dist
 
 .sqlite
 .lockb
+bun.lockb
+database.sqlite
