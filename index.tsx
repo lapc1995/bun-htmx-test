@@ -1,4 +1,4 @@
-import { Elysia } from 'elysia'
+import { Elysia, ws } from 'elysia'
 import { html } from '@elysiajs/html'
 import * as database from './database'
 import { Message } from './types/Message'
@@ -24,19 +24,16 @@ new Elysia()
                             </div>
 
                             <div class="col-start-2 col-span-3 flex bg-[#f4f4f8] h-[50rem] flex-col">
-                                <div class="flex flex-col w-full h-full overflow-y-auto" hx-get="/messages" hx-trigger="every 1s">
+                                <div class="flex flex-col w-full h-full overflow-y-auto flex-col-reverse" hx-get="/messages" hx-trigger="every 1s">
                                     {
                                         loadMessages()
                                     }
-                                
                                 </div>
                                 <form class="flex flex-row h-20" hx-post="/sendMessage">
                                     <input name="message" type="text" class="w-full bg-gray-200" placeholder="Type your message here..."></input>
-                                    <button class="w-20 bg-gray-200" >Send</button>
+                                    <button class="w-20 bg-gray-200">Send</button>
                                 </form>
                             </div>
-
-                
                         </div>
                     </div>
                 </div>
@@ -86,11 +83,12 @@ new Elysia()
 
     function loadMessages() {
         var messages = database.getAllMessages();
+        messages.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
         var messageComponents = [];
         for(var i = 0; i < messages.length; i++) {
             messageComponents.push(getMessageComponent(messages[i].message, i % 2 == 0));
         }
-        return messageComponents;
+        return messageComponents.join('');
 
 
         /*
