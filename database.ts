@@ -4,22 +4,25 @@ import { Message } from "./types/Message";
 const db: Database = new Database("database.sqlite");
 
 export function init() {
-    db.run("CREATE TABLE IF NOT EXISTS messages (message TEXT, author TEXT, date INTEGER, recipient TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS messages (message TEXT, author TEXT, date INTEGER, room TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS users (name TEXT, password TEXT, email TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS rooms (name TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS user_rooms (user TEXT, room TEXT)");
 }
 
 export function addMessage(message: Message) {
-    db.run("INSERT INTO messages (message, author, date, recipient) VALUES ($message, $author, $date, $recipient)", 
+    db.run("INSERT INTO messages (message, user, date, room) VALUES ($message, $user, $date, $room)", 
         [ message.message,
-            message.author,
+            message.user,
             message.date.getTime(),
-            message.recipient
+            message.room
         ]);
 }
 
-export function getMessages(author: string, recipient: string) {
-    return db.query("SELECT * FROM messages WHERE author = $author AND recipient = $recipient").get({
-        $author: author,
-        $recipient: recipient
+export function getMessages(user: string, room: string) {
+    return db.query("SELECT * FROM messages WHERE user = $user AND room = $room").get({
+        $author: user,
+        $room: room
     });
 }
 
@@ -27,17 +30,20 @@ export function getAllMessages(): Message[] {
     return db.query("SELECT * FROM messages").all() as Message[];
 }
 
-/*
-const insert = db.prepare("INSERT INTO cats (name) VALUES ($name)");
-const insertCats = db.transaction(cats => {
-  for (const cat of cats) insert.run(cat);
-  return cats.length;
-});
+export function addUser(email: string, name: string, password: string) {
+    db.run("INSERT INTO users (email, name, password) VALUES ($email, $name, $password)", [
+        email,
+        name,
+        password
+    ]);
+}
 
-const count = insertCats([
-  { $name: "Keanu" },
-  { $name: "Salem" },
-  { $name: "Crookshanks" },
-]);
+export function getUser(email: string) {
+    return db.query("SELECT * FROM users WHERE email = $email").get({
+        $email: email
+    });
+}
 
-console.log(`Inserted ${count} cats`);*/
+export function getAllUsers() {
+    return db.query("SELECT * FROM users").all();
+}

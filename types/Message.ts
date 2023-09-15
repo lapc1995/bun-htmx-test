@@ -1,7 +1,7 @@
 export type Message = {
     id: string;
     message: string;
-    author: string, 
+    user: string, 
     date: Date, 
-    recipient: string
+    room: string
 }
